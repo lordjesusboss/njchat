@@ -1,5 +1,6 @@
 import React from 'react';
-import { Platform, Dimensions, Alert, StyleSheet, Text, View ,ScrollView,Button ,TouchableOpacity, TextInput ,KeyboardAvoidingView , StatusBar, Picker, Image} from 'react-native';
+import { Platform, Dimensions, Alert, StyleSheet, Text, View ,ScrollView,Button ,
+  TouchableOpacity, TextInput ,KeyboardAvoidingView , StatusBar, Picker, Image} from 'react-native';
 import Prompt from 'react-native-prompt-crossplatform'
 import { italic } from 'ansi-colors';
 //import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -21,7 +22,8 @@ const Screen1 = (props) => {
   //<View style={{backgroundColor:'white',height: StatusBar.currentHeight}}></View>
   //props.loadContacts()
   let hi = new Date()
-  let date1 = (hi.getDate()<10?'0':'') + hi.getDate() + '-'+ (hi.getMonth()<10?'0':'') + (hi.getMonth()+1) + '-' + hi.getFullYear()
+  let date1 = (hi.getDate()<10?'0':'') + hi.getDate() + '-'+ (hi.getMonth()<10?'0':'') + 
+            (hi.getMonth()+1) + '-' + hi.getFullYear()
   let date2 = '27-11-2018'
   _menu = null;
  
@@ -44,24 +46,6 @@ const Screen1 = (props) => {
     this.hideMenu()
     props.handleLogout()
   }
-  /*
-  <TouchableOpacity
-          style={styles.difStyle2}
-          activeOpacity = { .5 }
-          onPress={props.handleLogout}
-          >
-            <Text style={{fontSize: 50 , color:'white'}}> LOGOUT </Text>
-          </TouchableOpacity>
-          <Menu
-          ref={this.setMenuRef}
-          button={<Text onPress={this.showMenu}>Show menu</Text>}
-          >
-            <MenuItem onPress={props.handleLogout}>Logout</MenuItem>
-            <MenuItem onPress={this.hideMenu}>Menu item 2</MenuItem>
-            <MenuItem onPress={this.hideMenu} disabled> Menu item 3</MenuItem>
-            <MenuDivider />
-            <MenuItem onPress={this.hideMenu}>Menu item 4</MenuItem>
-          </Menu>*/
   return (
     <View>
       <View style={{height: 50, backgroundColor:'grey',alignItems: 'center',flexDirection: 'row',}}>
@@ -281,7 +265,6 @@ export default class App extends React.Component {
     })
   }
   addContactAuto = () => {
-    
   }
   loadData = (val) => {
     this.setState(previousState => {
