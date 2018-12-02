@@ -1,5 +1,5 @@
 {
-  "name": "RNFirebaseStarter",
+  "name": "njchat",
   "version": "5.1.0",
   "private": true,
   "devDependencies": {
@@ -24,6 +24,12 @@
   "dependencies": {
     "react": "16.5.0",
     "react-native": "0.57.1",
-    "react-native-firebase": "^5.1.1"
+    "react-native-dialog": "^5.5.0",
+    "react-native-elements": "^0.19.1",
+    "react-native-firebase": "^5.1.1",
+    "react-native-material-menu": "^0.4.2",
+    "react-native-prompt": "^1.0.0",
+    "react-native-prompt-crossplatform": "^1.6.1",
+    "react-native-vector-icons": "^6.1.0"
   }
 }
