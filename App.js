@@ -4,7 +4,7 @@ import { Platform, Dimensions, Alert, StyleSheet, Text, View ,ScrollView,Button 
 import Prompt from 'react-native-prompt-crossplatform'
 import { italic } from 'ansi-colors';
 //import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Icon } from 'react-native-elements';
+//import { Icon } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Dialog from "react-native-dialog";
@@ -19,6 +19,18 @@ function getName(Name1, Name2) {
 }
 let lastMessageDetailArray = []
 const Screen1 = (props) => {
+  /*constructor = () => {
+    super();
+    this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
+  };
+  forceUpdateHandler = () => {
+    this.forceUpdate();
+  };
+  <TouchableOpacity 
+          style={styles.button} 
+          onClick= {this.forceUpdateHandler}>
+          <Text>ForceUpdate</Text>
+          </TouchableOpacity>*/
   //<View style={{backgroundColor:'white',height: StatusBar.currentHeight}}></View>
   //props.loadContacts()
   let hi = new Date()
@@ -69,13 +81,12 @@ const Screen1 = (props) => {
             onLongPress={() => props.deleteContacts(con)}> 
               <View style={{flexDirection:'row',paddingBottom:10}}>
                 <View style={{alignSelf: 'flex-start'}}><Text style={{fontSize:20 , fontStyle: 'italic', alignSelf: 'flex-start',}}> {con.contact} </Text></View>
-                <View style={{flex:1,alignSelf: 'flex-end'}}><Text style={{fontSize:15, color:'grey', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text></View>
+                <View style={{flex:1,alignSelf: 'flex-end'}}>{con.count.num != 0 ? <Text style={{fontSize:15, color:'green', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text> : <Text style={{fontSize:15, color:'grey', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text>}</View>
               </View>
-              <View style={{flex:1}}>
-                <View style={{flex:1}}>
-                  <Text style={{fontSize:15, color:'grey'}}>{con.lastMessage.message}</Text>
-                </View>
-              </View> 
+              <View style={{flex:1,flexDirection: 'row'}}>
+                <View style={{flex:1,alignSelf: 'flex-start'}}><Text style={{fontSize:15, color:'grey'}}>{con.lastMessage.message}</Text></View>
+                <View style={{alignSelf: 'flex-end'}}>{con.count.num != 0 ? <View style={{backgroundColor:'#00cc00', borderRadius:70, paddingTop:5, paddingLeft:6, paddingRight:6, paddingBottom:5,}}><Text style={{color: 'white'}}> {con.count.num} </Text></View> : <Text></Text>}</View>
+              </View>
             </TouchableOpacity>
           )}
         </View>
@@ -158,8 +169,9 @@ const ChatScreen = (props) => {
         </View>
         <ScrollView style={{backgroundColor: '#e8ebef'}} ref={ref => this.scrollView = ref} onContentSizeChange={(contentWidth, contentHeight)=>{ this.scrollView.scrollToEnd({animated: true});}}>
           <View style={{paddingTop: 10,}}>
+            {props.read[0] === false ? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }
             {props.chat.map((text, i) => (props.senders[i] === varCurrentUser && props.delSenders[i] === false) || (props.senders[i] != varCurrentUser && props.delRecs[i] === false) ? props.senders[i] === 
-            varCurrentUser ? <View>{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View>{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View></View>)}
+            varCurrentUser ? <View>{props.read[i] === false && props.read[i-1] === true? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View>{props.read[i] === false && props.read[i-1] === true? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View></View>)}
           </View>
         </ScrollView>
           <View style={{height:60,padding: 10 , paddingTop:10,paddingBottom:0, flexDirection: 'row',justifyContent: 'center',}}>
@@ -221,7 +233,8 @@ export default class App extends React.Component {
     dialogVisible2: false,
     delRecs:[],
     delSenders:[],
-    contactInfo:[]
+    contactInfo:[],
+    read:[],
   }
   async componentDidMount() {
     // TODO: You: Do firebase things
@@ -264,11 +277,26 @@ export default class App extends React.Component {
       }
     })
   }
-  addContactAuto = () => {
+  countUnreadMsgs = (contact) => {
+    let that = this
+    let count = { num : 0 }
+    let path = '/chatMessages/' + getName(contact.replace("@","").replace(".",""), that.state.currentUser) 
+    let ref = firebase.database().ref(path)
+    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
+    ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
+      //Alert.alert(snapshot.key)
+      count.num += 1 
+      that.setState(that.state)
+    })
+    //Alert.alert()
+    /*ref.on("child_added").then((snapshot) => {
+      Alert.alert(snapshot.key)
+    })*/
+    return count
   }
   loadData = (val) => {
     this.setState(previousState => {
-      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[],};
+      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[], read:[]};
     });
     let that = this
     let firebase_path = '/chatMessages/' + getName(val.replace("@","").replace(".",""), this.state.currentUser)
@@ -283,7 +311,8 @@ export default class App extends React.Component {
           dates: previousState.dates.concat(snapshot.val().date),
           keys: previousState.keys.concat(snapshot.key),
           delRecs: previousState.delRecs.concat(snapshot.val().delRec),
-          delSenders: previousState.delSenders.concat(snapshot.val().delSender),}
+          delSenders: previousState.delSenders.concat(snapshot.val().delSender),
+          read: previousState.read.concat(snapshot.val().read),}
       })
     })
     //firebase.database().goOffline()
@@ -305,7 +334,7 @@ export default class App extends React.Component {
       });
     })
     this.setState(previousState => {
-      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[],};
+      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[], read:[]};
     });
   }
   changeDelNum = (i) => {
@@ -376,16 +405,18 @@ export default class App extends React.Component {
     
   }
   loadContacts = () => {
-    if(this.state.contacts.length == 0){
+    //if(this.state.contacts.length == 0){
       lastMessageDetailArray = []
       let that = this
       let firebase_path = '/contacts/' + this.state.currentUser
       this.firebase_ref = firebase.database().ref(firebase_path)
       this.firebase_ref.once("value").then((snapshot) => { 
         snapshot.forEach(function(data) {
+          that.countUnreadMsgs(data.val().contact)
           let lastMessageDetailObject = {};
           lastMessageDetailObject.contact = data.val().contact;
-          lastMessageDetailObject.lastMessage = that.getLastMessage(getName(data.val().contact, that.state.currentUser));
+          lastMessageDetailObject.lastMessage = that.getLastMessage(getName(data.val().contact.replace("@","").replace(".",""), that.state.currentUser.replace("@","").replace(".","")));
+          lastMessageDetailObject.count = that.countUnreadMsgs(data.val().contact)
           lastMessageDetailArray.push(lastMessageDetailObject);
           console.log(data.val().contact)
         });
@@ -401,7 +432,7 @@ export default class App extends React.Component {
       }), function (error) {
           console.log("Error: " + error.code);
       };
-    }
+    //}
   }
   printlastMessageDetailObjects = () => {
     for (i=0; i< lastMessageDetailArray.length; ++i) {
@@ -413,17 +444,24 @@ export default class App extends React.Component {
     }
   } 
   getLastMessage = (contact) => {
+    let that = this
     let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
-    contact = contact.replace("@","").replace(".","")
+    //contact = contact.replace("@","").replace(".","")
     let firebase_path = '/chatMessages/' + contact
     let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-    lastMsg.once("child_added", function(data) {    
-      lastMessage.message = data.val().message
-      lastMessage.time = data.val().time
-      lastMessage.date = data.val().date
-    }, function (error) {
-        console.log("Error: " + error.code);
-    });
+    lastMsg.once("child_added").then((data) => {
+      if((data.val().sender === varCurrentUser && data.val().delSender === true) || (data.val().sender != varCurrentUser && data.val().delRec === true)){
+        lastMessage.message = ""
+        lastMessage.time = ""
+        lastMessage.date = ""
+      }else{
+        lastMessage.message = data.val().message
+        lastMessage.time = data.val().time
+        lastMessage.date = data.val().date
+        that.setState(that.state);
+      }
+
+    })
     return lastMessage;
   }
   lastMsgInfo = (contact) => {
@@ -473,7 +511,8 @@ export default class App extends React.Component {
       timestamp: new Date().getTime(),
       date : date1,
       delSender : false,
-      delRec: false
+      delRec: false,
+      read : false
     }).then((data)=>{
       Firebase.database().goOffline()
     }).catch((error)=>{
@@ -543,6 +582,7 @@ export default class App extends React.Component {
         }
         });
     })
+    this.loadContacts()
   }
   deleteMessage = ( i, k1) => {
     let array = this.state.chat
@@ -564,8 +604,16 @@ export default class App extends React.Component {
         }
         });
     })
-  } 
+  }
+  
   change = () => {
+    let name = this.state.language.replace("@","").replace(".","")
+    let that = this
+    let path = '/chatMessages/' + getName(name, that.state.currentUser) 
+    let ref = firebase.database().ref(path)
+    ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
+      firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+snapshot.key+'/').update({ read: true });
+    })
     this.loadContacts()
     this.setState(previousState => {
       return { showScreen : !previousState.showScreen}
@@ -722,6 +770,7 @@ export default class App extends React.Component {
             deleteMessage={this.deleteMessage}
             senders={this.state.senders} 
             keys={this.state.keys}
+            read={this.state.read}
             times={this.state.times}
             dates={this.state.dates}
             handleInsert={this.handleInsert} 
