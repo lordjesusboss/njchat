@@ -78,7 +78,7 @@ const Screen1 = (props) => {
             key = {i}
             style={styles.button} 
             onPress={() => props.pickerFunc(con.contact)}
-            onLongPress={() => props.deleteContacts(con)}> 
+            onLongPress={() => props.deleteContacts(con.contact)}> 
               <View style={{flexDirection:'row',paddingBottom:10}}>
                 <View style={{alignSelf: 'flex-start'}}><Text style={{fontSize:20 , fontStyle: 'italic', alignSelf: 'flex-start',}}> {con.contact} </Text></View>
                 <View style={{flex:1,alignSelf: 'flex-end'}}>{con.count.num != 0 ? <Text style={{fontSize:15, color:'green', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text> : <Text style={{fontSize:15, color:'grey', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text>}</View>
@@ -169,9 +169,9 @@ const ChatScreen = (props) => {
         </View>
         <ScrollView style={{backgroundColor: '#e8ebef'}} ref={ref => this.scrollView = ref} onContentSizeChange={(contentWidth, contentHeight)=>{ this.scrollView.scrollToEnd({animated: true});}}>
           <View style={{paddingTop: 10,}}>
-            {props.read[0] === false ? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }
+            {props.read[0] === false && props.senders[0] != varCurrentUser ? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }
             {props.chat.map((text, i) => (props.senders[i] === varCurrentUser && props.delSenders[i] === false) || (props.senders[i] != varCurrentUser && props.delRecs[i] === false) ? props.senders[i] === 
-            varCurrentUser ? <View>{props.read[i] === false && props.read[i-1] === true? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View>{props.read[i] === false && props.read[i-1] === true? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View></View>)}
+            varCurrentUser ? <View>{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View>{props.read[i] === false && ((props.read[i-1] === true && props.senders[i-1] != varCurrentUser) || (props.senders[i-1] === varCurrentUser))? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{props.dates[i] != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{props.dates[i]}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{props.times[i]}</Text></View></View> : <View></View>)}
           </View>
         </ScrollView>
           <View style={{height:60,padding: 10 , paddingTop:10,paddingBottom:0, flexDirection: 'row',justifyContent: 'center',}}>
@@ -285,8 +285,10 @@ export default class App extends React.Component {
     //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
     ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
       //Alert.alert(snapshot.key)
-      count.num += 1 
-      that.setState(that.state)
+      if(snapshot.val().sender != varCurrentUser){
+        count.num += 1 
+        that.setState(that.state)
+      }
     })
     //Alert.alert()
     /*ref.on("child_added").then((snapshot) => {
@@ -304,16 +306,39 @@ export default class App extends React.Component {
     this.firebase_ref = firebase.database().ref(firebase_path)
     this.firebase_ref.off("child_added")
     this.firebase_ref.on("child_added", (snapshot) => {
-      that.setState((previousState) => {
-        return { chat : previousState.chat.concat(snapshot.val().message) , 
-          senders: previousState.senders.concat(snapshot.val().sender),
-          times: previousState.times.concat(snapshot.val().time),
-          dates: previousState.dates.concat(snapshot.val().date),
-          keys: previousState.keys.concat(snapshot.key),
-          delRecs: previousState.delRecs.concat(snapshot.val().delRec),
-          delSenders: previousState.delSenders.concat(snapshot.val().delSender),
-          read: previousState.read.concat(snapshot.val().read),}
-      })
+      if(snapshot.val().sender === varCurrentUser){
+        let name = this.state.language.replace("@","").replace(".","")
+        let that = this
+        let path = '/chatMessages/' + getName(name, that.state.currentUser) 
+        let ref = firebase.database().ref(path)
+        ref.orderByChild("read").equalTo(false).once("value").then((snapshot)=> {
+          snapshot.forEach(function(childSnapshot) {
+            if(childSnapshot.val().sender != varCurrentUser){
+              firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+childSnapshot.key+'/').update({ read: true });
+            }
+          });
+        })
+        that.state.read.forEach(function(element, i) {
+          that.state.read[i] = true
+        });
+        /*for(let i = that.state.read.length;i >= 0;i--){
+          
+        }*/
+        this.setState(this.state)
+      }
+      if((snapshot.val().sender === varCurrentUser && snapshot.val().delSender === false) || (snapshot.val().sender != varCurrentUser && snapshot.val().delRec === false)){
+        console.log(snapshot.key)
+        that.setState((previousState) => {
+          return { chat : previousState.chat.concat(snapshot.val().message) , 
+            senders: previousState.senders.concat(snapshot.val().sender),
+            times: previousState.times.concat(snapshot.val().time),
+            dates: previousState.dates.concat(snapshot.val().date),
+            keys: previousState.keys.concat(snapshot.key),
+            delRecs: previousState.delRecs.concat(snapshot.val().delRec),
+            delSenders: previousState.delSenders.concat(snapshot.val().delSender),
+            read: previousState.read.concat(snapshot.val().read),}
+        })
+      }
     })
     //firebase.database().goOffline()
   }
@@ -369,7 +394,14 @@ export default class App extends React.Component {
     let name = this.state.language.replace("@","").replace(".","")
     firebase.database().ref('/chatMessages/' + getName(name , this.state.currentUser) + '/'+this.state.keys[i]+'/').update({ delRec: true });
     //this.state.keys[i] this.state.delRec[i]
-    this.state.delRecs[i] = true
+    this.state.chat.splice(i,1)
+    this.state.senders.splice(i,1)
+    this.state.times.splice(i,1)
+    this.state.dates.splice(i,1)
+    this.state.keys.splice(i,1)
+    this.state.delRecs.splice(i,1)
+    this.state.delSenders.splice(i,1)
+    this.state.read.splice(i,1)
     this.setState({ dialogVisible2: false });
   };
   handleDelete3 = () => {
@@ -377,7 +409,14 @@ export default class App extends React.Component {
     let name = this.state.language.replace("@","").replace(".","")
     firebase.database().ref('/chatMessages/' + getName(name , this.state.currentUser) + '/'+this.state.keys[i]+'/').update({ delSender: true });
     //this.state.keys[i] this.state.delRec[i]
-    this.state.delSenders[i] = true
+    this.state.chat.splice(i,1)
+    this.state.senders.splice(i,1)
+    this.state.times.splice(i,1)
+    this.state.dates.splice(i,1)
+    this.state.keys.splice(i,1)
+    this.state.delRecs.splice(i,1)
+    this.state.delSenders.splice(i,1)
+    this.state.read.splice(i,1)
     this.setState({ dialogVisible: false });
   }
   getCurrentUser = (email) => {
@@ -448,19 +487,17 @@ export default class App extends React.Component {
     let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
     //contact = contact.replace("@","").replace(".","")
     let firebase_path = '/chatMessages/' + contact
-    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-    lastMsg.once("child_added").then((data) => {
-      if((data.val().sender === varCurrentUser && data.val().delSender === true) || (data.val().sender != varCurrentUser && data.val().delRec === true)){
-        lastMessage.message = ""
-        lastMessage.time = ""
-        lastMessage.date = ""
-      }else{
+    let ref = firebase.database().ref(firebase_path)
+    
+    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
+    ref.on("child_added", function(snapshot) {
+      let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
+      lastMsg.once("child_added").then((data) => {
         lastMessage.message = data.val().message
         lastMessage.time = data.val().time
         lastMessage.date = data.val().date
         that.setState(that.state);
-      }
-
+      })
     })
     return lastMessage;
   }
@@ -569,7 +606,7 @@ export default class App extends React.Component {
   }
   deleteContacts = (val) => {
     this.setState(previousState => {  
-      return { contacts: previousState.contacts.filter(con => con != val) };
+      return { contacts: previousState.contacts.filter(con => con.contact != val) };
     });
     firebase_path = '/contacts/' + this.state.currentUser
     firebase.database().ref(firebase_path).once("value")
@@ -582,17 +619,27 @@ export default class App extends React.Component {
         }
         });
     })
-    this.loadContacts()
+    
   }
   deleteMessage = ( i, k1) => {
-    let array = this.state.chat
-    array.splice(i, 1)
-    this.setState(previousState => {  
-      return { chat: array};
-    });
+    /*for(let p = 0;p < this.state.keys.length;p++){
+      Alert.alert(this.state.keys[p])
+    }*/
+    console.log(this.state.keys.join(','))
+    this.state.chat.splice(i,1)
+    this.state.senders.splice(i,1)
+    this.state.times.splice(i,1)
+    this.state.dates.splice(i,1)
+    this.state.keys.splice(i,1)
+    this.state.delRecs.splice(i,1)
+    this.state.delSenders.splice(i,1)
+    this.state.read.splice(i,1)
+
+    this.setState(this.state);
     
     let name = this.state.language.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)
+    let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser) + '/'
+    //firebase.database().ref(firebase_path).remove()
     firebase.database().ref(firebase_path).once("value")
     .then((snapshot)=> {
  
@@ -603,7 +650,7 @@ export default class App extends React.Component {
           firebase.database().ref(newPath).remove()
         }
         });
-    })
+      })
   }
   
   change = () => {
@@ -611,8 +658,18 @@ export default class App extends React.Component {
     let that = this
     let path = '/chatMessages/' + getName(name, that.state.currentUser) 
     let ref = firebase.database().ref(path)
+    /*ref.off("child_added")
     ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
-      firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+snapshot.key+'/').update({ read: true });
+      if(snapshot.val().sender != varCurrentUser){
+        firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+snapshot.key+'/').update({ read: true });
+      }
+    })*/
+    ref.orderByChild("read").equalTo(false).once("value").then((snapshot)=> {
+      snapshot.forEach(function(childSnapshot) {
+        if(childSnapshot.val().sender != varCurrentUser){
+          firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+childSnapshot.key+'/').update({ read: true });
+        }
+      });
     })
     this.loadContacts()
     this.setState(previousState => {
