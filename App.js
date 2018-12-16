@@ -482,6 +482,23 @@ export default class App extends React.Component {
       Alert.alert(lastMessageDetailObject.lastMessage.date);
     }
   } 
+  /*getLastMessage = (contact) => {
+    let that = this
+    let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
+    //contact = contact.replace("@","").replace(".","")
+    let firebase_path = '/chatMessages/' + contact
+    let ref = firebase.database().ref(firebase_path)
+    //((snapshot.val().sender === varCurrentUser && snapshot.val().delSender === false) || (snapshot.val().sender != varCurrentUser && snapshot.val().delRec === false))
+    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
+    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
+    lastMsg.on("child_added").then((data) => {
+      lastMessage.message = data.val().message
+      lastMessage.time = data.val().time
+      lastMessage.date = data.val().date
+      that.setState(that.state);
+    })
+    return lastMessage;
+  }*/
   getLastMessage = (contact) => {
     let that = this
     let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
@@ -490,15 +507,14 @@ export default class App extends React.Component {
     let ref = firebase.database().ref(firebase_path)
     
     //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
-    ref.on("child_added", function(snapshot) {
-      let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-      lastMsg.once("child_added").then((data) => {
-        lastMessage.message = data.val().message
-        lastMessage.time = data.val().time
-        lastMessage.date = data.val().date
-        that.setState(that.state);
-      })
+    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
+    lastMsg.on("child_added", function(data) {
+      lastMessage.message = data.val().message
+      lastMessage.time = data.val().time
+      lastMessage.date = data.val().date
+      that.setState(that.state);
     })
+    
     return lastMessage;
   }
   lastMsgInfo = (contact) => {
@@ -539,7 +555,6 @@ export default class App extends React.Component {
     let hi = new Date()
     let date1 = (hi.getDate()<10?'0':'') + hi.getDate() + '-'+ (hi.getMonth()<10?'0':'') + (hi.getMonth()+1) + '-' + hi.getFullYear()
     let name = this.state.language.replace("@","").replace(".","")
-    Alert.alert(this.state.text + ' ' + this.state.language)
     let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)
     firebase.database().ref(firebase_path).push({
       message:this.state.text,
