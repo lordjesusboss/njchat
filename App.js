@@ -269,24 +269,15 @@ export default class App extends React.Component {
       messages : msgs
    });
   }
-  clearChat2 = () => {
-    let that = this
+  clearChat = () => {
     let name = this.state.language.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)
-    firebase.database().ref(firebase_path).once("value")
-    .then((snapshot)=> {
-      snapshot.forEach(function(childSnapshot) {
-        let key = childSnapshot.key;
-        let refs = '/chatMessages/' + getName(name , that.state.currentUser) + '/'+key+'/';
-        if(childSnapshot.val().sender === that.state.currentUser){
-          firebase.database().ref(refs).update({ delSender: true });
-        }else{
-          firebase.database().ref(refs).update({ delRec: true });
-        }
+    let string = this.getValue(name)
+    this.ref.doc(getName(name,this.state.currentUser)).collection('messages').get().then(function(querySnapshot) {
+      querySnapshot.forEach(function(doc) {
+        let obj = {}
+        obj[string] = true;
+        doc.ref.update(obj)
       });
-    })
-    this.setState(previousState => {
-      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[], read:[]};
     });
   }
   changeDelNum = (i) => {
