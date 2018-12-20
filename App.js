@@ -3,8 +3,6 @@ import { Platform, Dimensions, Alert, StyleSheet, Text, View ,ScrollView,Button 
   TouchableOpacity, TextInput ,KeyboardAvoidingView , StatusBar, Picker, Image} from 'react-native';
 import Prompt from 'react-native-prompt-crossplatform'
 import { italic } from 'ansi-colors';
-//import Icon from 'react-native-vector-icons/FontAwesome5';
-//import { Icon } from 'react-native-elements';
 import firebase from 'react-native-firebase';
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu';
 import Dialog from "react-native-dialog";
@@ -19,26 +17,11 @@ function getName(Name1, Name2) {
 }
 let lastMessageDetailArray = []
 const Screen1 = (props) => {
-  /*constructor = () => {
-    super();
-    this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
-  };
-  forceUpdateHandler = () => {
-    this.forceUpdate();
-  };
-  <TouchableOpacity 
-          style={styles.button} 
-          onClick= {this.forceUpdateHandler}>
-          <Text>ForceUpdate</Text>
-          </TouchableOpacity>*/
-  //<View style={{backgroundColor:'white',height: StatusBar.currentHeight}}></View>
-  //props.loadContacts()
   let hi = new Date()
   let date1 = (hi.getDate()<10?'0':'') + hi.getDate() + '-'+ (hi.getMonth()<10?'0':'') + 
             (hi.getMonth()+1) + '-' + hi.getFullYear()
   let date2 = '27-11-2018'
   _menu = null;
- 
   setMenuRef = ref => {
     this._menu = ref;
   };
@@ -73,19 +56,22 @@ const Screen1 = (props) => {
       </View>
       <ScrollView style={{height: Dimensions.get('window').height - 50 - StatusBar.currentHeight}}>
         <View style={{backgroundColor: '#77abff',}}>
-          {props.contacts.map((con , i) => 
+          
+          
+          {props.contacts2.map((con, i) => 
             <TouchableOpacity 
             key = {i}
             style={styles.button} 
             onPress={() => props.pickerFunc(con.contact)}
-            onLongPress={() => props.deleteContacts(con.contact)}> 
+            onLongPress={() => props.deleteContacts2(con.contact)}
+            > 
               <View style={{flexDirection:'row',paddingBottom:10}}>
                 <View style={{alignSelf: 'flex-start'}}><Text style={{fontSize:20 , fontStyle: 'italic', alignSelf: 'flex-start',}}> {con.contact} </Text></View>
-                <View style={{flex:1,alignSelf: 'flex-end'}}>{con.count.num != 0 ? <Text style={{fontSize:15, color:'green', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text> : <Text style={{fontSize:15, color:'grey', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lastMessage.date ? con.lastMessage.time : con.lastMessage.date}</Text>}</View>
+                <View style={{flex:1,alignSelf: 'flex-end'}}>{con.count1.num != 0 ? <Text style={{fontSize:15, color:'green', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lstMsg.date ? con.lstMsg.time : con.lstMsg.date}</Text> : <Text style={{fontSize:15, color:'grey', alignSelf: 'flex-end',paddingLeft:20}}>{date1 === con.lstMsg.date ? con.lstMsg.time : con.lstMsg.date}</Text>}</View>
               </View>
               <View style={{flex:1,flexDirection: 'row'}}>
-                <View style={{flex:1,alignSelf: 'flex-start'}}><Text style={{fontSize:15, color:'grey'}}>{con.lastMessage.message}</Text></View>
-                <View style={{alignSelf: 'flex-end'}}>{con.count.num != 0 ? <View style={{backgroundColor:'#00cc00', borderRadius:70, paddingTop:5, paddingLeft:6, paddingRight:6, paddingBottom:5,}}><Text style={{color: 'white'}}> {con.count.num} </Text></View> : <Text></Text>}</View>
+                <View style={{flex:1,alignSelf: 'flex-start'}}><Text style={{fontSize:15, color:'grey'}}>{con.lstMsg.message}</Text></View>
+                <View style={{alignSelf: 'flex-end'}}>{con.count1.num != 0 ? <View style={{backgroundColor:'#00cc00', borderRadius:70, paddingTop:5, paddingLeft:6, paddingRight:6, paddingBottom:5,}}><Text style={{color: 'white'}}> {con.count1.num} </Text></View> : <Text></Text>}</View>
               </View>
             </TouchableOpacity>
           )}
@@ -102,8 +88,6 @@ const Screen1 = (props) => {
     </View>
   )
 }
-/* */
-//{props.chat.map((text, i) => props.senders[i] === currentUser ? <View style={styles.msgs} key={i}><Text key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text></View> : <View style={styles.msgs2} key={i}><Text key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{text}</Text></View>)}
 const ChatScreen = (props) => {
   setMenuRef = ref => {
     this._menu = ref;
@@ -120,35 +104,16 @@ const ChatScreen = (props) => {
   };
   func2 = () => {
     props.onClick()
-    //props.handleInsert()
     this.textInput.clear()
   }
   func = (num) => {
-    let ting = props.chat[num]
-    //Alert.alert(ting + 'This message has been long pressed' + num + ' pressed! Delete   ')
-    //props.deleteMessage( num, props.keys[num])
-    //props.loadData(props.language)
     props.changeDelNum(num)
     props.showDialog()
-    //props.senders props.dates props.timesrops.loadData(props.language)
   }
   openDialog2 = (num) => {
     props.changeDelNum(num)
     props.showDialog2()
   }
-  //{/*<Icon name='chevron-left' type='evilicon' color='black' />*/}
-  /*<TouchableOpacity
-    style={styles.difStyle3}
-    activeOpacity = { .5 }
-    onPress={props.clearChat}
-    >
-      <Text>Clear Chat</Text>
-    </TouchableOpacity> */
-    /* <View style={{paddingTop: 10,}}>
-            {props.read[0] === false && props.msgs[0].sender != varCurrentUser ? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }
-            {props.msgs.map((obj, i) => (obj.sender === varCurrentUser && obj.delSender === false) || (obj.sender != varCurrentUser && obj.delRec === false) ? obj.sender === 
-            varCurrentUser ? <View>{obj.date != props.msgs[i-1].date ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View> : <View>{obj.read === false && ((props.read[i-1] === true && props.senders[i-1] != varCurrentUser) || (props.senders[i-1] === varCurrentUser))? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{obj.date != props.dates[i-1] ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View> : <View></View>)}
-          </View>*/
   return (
       <View style={{flex:1}}> 
         <View style={{height: 50, backgroundColor:'white',alignItems: 'center',flexDirection: 'row',}}>
@@ -174,9 +139,8 @@ const ChatScreen = (props) => {
         </View>
         <ScrollView style={{backgroundColor: '#e8ebef'}} ref={ref => this.scrollView = ref} onContentSizeChange={(contentWidth, contentHeight)=>{ this.scrollView.scrollToEnd({animated: true});}}>
         <View style={{paddingTop: 10,}}>
-            {/*props.read[0] === false && props.msgs[0].sender != varCurrentUser ? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> */}
-            {props.msgs.map((obj, i) => (obj.sender === varCurrentUser && obj.delSender === false) || (obj.sender != varCurrentUser && obj.delRec === false) ? obj.sender === 
-            varCurrentUser ? <View>{i === 0 || obj.date != props.msgs[i-1].date ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View> : <View>{obj.read === false && ((i === 0) || (props.msgs[i-1].sender === varCurrentUser) || (props.msgs[i-1].read === true ))? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{i === 0 || obj.date != props.msgs[i-1].date ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View> : <View></View>)}
+            {props.msgs.map((obj, i) => obj.sender === 
+            varCurrentUser ? <View>{i === 0 || obj.date != props.msgs[i-1].date ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs} key={i}><Text onLongPress={() => this.func(i)} key={i} style={{color: 'white' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'white',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View> : <View>{obj.read === false && ((i === 0) || (props.msgs[i-1].sender === varCurrentUser) || (props.msgs[i-1].read === true ))? <View style={{backgroundColor:'#99ccff', borderRadius: 70, alignSelf: 'center', padding: 10, margin: 10,}}><Text> Unread Messages </Text></View> : <View></View> }{i === 0 || obj.date != props.msgs[i-1].date ? <View style={styles.dateStyle}><Text>{obj.date}</Text></View> : <View></View>}<View style={styles.msgs2} key={i}><Text key={i} onLongPress={() => this.openDialog2(i)} style={{color: 'black' ,fontSize:20,paddingLeft:10,paddingRight:10}}>{obj.message}</Text><Text style={{color:'black',paddingRight:5,alignSelf:'flex-end'}}>{obj.time}</Text></View></View>)}
           </View>
         </ScrollView>
           <View style={{height:60,padding: 10 , paddingTop:10,paddingBottom:0, flexDirection: 'row',justifyContent: 'center',}}>
@@ -215,13 +179,14 @@ const ChatScreen = (props) => {
       </View>  
   )
 }
-//<Icon name='sc-telegram' type='evilicon' color='#517fa4' size={40}/>
-//<Button title="insert1" onPress={this.handleInsert} />
 export default class App extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection("messages")
+    this.ref = firebase.firestore().collection("Chats")
+    this.contacts = firebase.firestore().collection("contacts")
     this.unsubscribe = null
+    this.unContacts = null
+    this.countUnread = null
   }
   state = {
     text: '',
@@ -245,27 +210,15 @@ export default class App extends React.Component {
     delSenders:[],
     contactInfo:[],
     read:[],
-    messages: []
+    messages: [],
+    contacts2: [],
+    unreadMessages: [],
   }
   async componentDidMount() {
-    // TODO: You: Do firebase things
-    // const { user } = await firebase.auth().signInAnonymously();
-    // console.warn('User -> ', user.toJSON());
-
-    // await firebase.analytics().logEvent('foo', { bar: '123'});
     that = this
-    //this.loadContacts();
-    //this.state.contactsLoaded = true
-    if (!this.state.contactsLoaded) {
-      // just load the contact
-      //this.loadContacts();
-      //this.state.contactsLoaded = true
-    }
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        // User is signed in.
         varCurrentUser = that.getCurrentUser(user.email) 
-        //Alert.alert(varCurrentUser)
         name = user.displayName;
         email = user.email;
         photoUrl = user.photoURL;
@@ -279,9 +232,8 @@ export default class App extends React.Component {
           signup:false,
           action:"chat"  
         })  
-        this.loadContacts();
+        this.unContacts = this.contacts.doc(varCurrentUser).onSnapshot(this.loadContacts2)
       } else {
-        // No user is signed in.
         this.setState({
           signup:true,
           action:"signup"  
@@ -289,27 +241,14 @@ export default class App extends React.Component {
       }
     })
   }
-  countUnreadMsgs = (contact) => {
-    let that = this
-    let count = { num : 0 }
-    let path = '/chatMessages/' + getName(contact.replace("@","").replace(".",""), that.state.currentUser) 
-    let ref = firebase.database().ref(path)
-    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
-    ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
-      //Alert.alert(snapshot.key)
-      if(snapshot.val().sender != varCurrentUser){
-        count.num += 1 
-        that.setState(that.state)
-      }
-    })
-    //Alert.alert()
-    /*ref.on("child_added").then((snapshot) => {
-      Alert.alert(snapshot.key)
-    })*/
-    return count
+  getValue = (val) => {
+    if (varCurrentUser > val) {
+      return 'delSender';
+    } else {
+      return 'delRec';
+  }
   }
   loadData2 = (querySnapshot) => {
-    
     const msgs = [];
     querySnapshot.forEach((doc) => {
       const {message,time,timesstamp,date,delSender,delRec,read,sender} = doc.data();
@@ -329,55 +268,8 @@ export default class App extends React.Component {
     this.setState({ 
       messages : msgs
    });
-   ///Alert.alert(this.state.messages[0].read.toString())
   }
-  loadData = (val) => {
-    this.setState(previousState => {
-      return {chat : [], senders:[], times:[], dates:[], keys:[], delRecs:[], delSenders:[], read:[]};
-    });
-    let that = this
-    let firebase_path = '/chatMessages/' + getName(val.replace("@","").replace(".",""), this.state.currentUser)
-    let holdMessages  = "";
-    this.firebase_ref = firebase.database().ref(firebase_path)
-    this.firebase_ref.off("child_added")
-    this.firebase_ref.on("child_added", (snapshot) => {
-      if(snapshot.val().sender === varCurrentUser){
-        let name = this.state.language.replace("@","").replace(".","")
-        let that = this
-        let path = '/chatMessages/' + getName(name, that.state.currentUser) 
-        let ref = firebase.database().ref(path)
-        ref.orderByChild("read").equalTo(false).once("value").then((snapshot)=> {
-          snapshot.forEach(function(childSnapshot) {
-            if(childSnapshot.val().sender != varCurrentUser){
-              firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+childSnapshot.key+'/').update({ read: true });
-            }
-          });
-        })
-        that.state.read.forEach(function(element, i) {
-          that.state.read[i] = true
-        });
-        /*for(let i = that.state.read.length;i >= 0;i--){
-          
-        }*/
-        this.setState(this.state)
-      }
-      if((snapshot.val().sender === varCurrentUser && snapshot.val().delSender === false) || (snapshot.val().sender != varCurrentUser && snapshot.val().delRec === false)){
-        console.log(snapshot.key)
-        that.setState((previousState) => {
-          return { chat : previousState.chat.concat(snapshot.val().message) , 
-            senders: previousState.senders.concat(snapshot.val().sender),
-            times: previousState.times.concat(snapshot.val().time),
-            dates: previousState.dates.concat(snapshot.val().date),
-            keys: previousState.keys.concat(snapshot.key),
-            delRecs: previousState.delRecs.concat(snapshot.val().delRec),
-            delSenders: previousState.delSenders.concat(snapshot.val().delSender),
-            read: previousState.read.concat(snapshot.val().read),}
-        })
-      }
-    })
-    //firebase.database().goOffline()
-  }
-  clearChat = () => {
+  clearChat2 = () => {
     let that = this
     let name = this.state.language.replace("@","").replace(".","")
     let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)
@@ -427,50 +319,41 @@ export default class App extends React.Component {
   handleDelete2 = () => {
     let i = this.state.delNum
     let name = this.state.language.replace("@","").replace(".","")
-    firebase.database().ref('/chatMessages/' + getName(name , this.state.currentUser) + '/'+this.state.keys[i]+'/').update({ delRec: true });
-    //this.state.keys[i] this.state.delRec[i]
-    this.state.chat.splice(i,1)
-    this.state.senders.splice(i,1)
-    this.state.times.splice(i,1)
-    this.state.dates.splice(i,1)
-    this.state.keys.splice(i,1)
-    this.state.delRecs.splice(i,1)
-    this.state.delSenders.splice(i,1)
-    this.state.read.splice(i,1)
+    let string = this.getValue(name)
+    let obj = {}
+    obj[string] = true;
+    this.ref.doc(getName(name,this.state.currentUser)).collection('messages').doc(this.state.messages[i].key).update(obj)
     this.setState({ dialogVisible2: false });
   };
   handleDelete3 = () => {
     let i = this.state.delNum
     let name = this.state.language.replace("@","").replace(".","")
-    firebase.database().ref('/chatMessages/' + getName(name , this.state.currentUser) + '/'+this.state.keys[i]+'/').update({ delSender: true });
-    //this.state.keys[i] this.state.delRec[i]
-    this.state.chat.splice(i,1)
-    this.state.senders.splice(i,1)
-    this.state.times.splice(i,1)
-    this.state.dates.splice(i,1)
-    this.state.keys.splice(i,1)
-    this.state.delRecs.splice(i,1)
-    this.state.delSenders.splice(i,1)
-    this.state.read.splice(i,1)
+    let string = this.getValue(name)
+    let obj = {}
+    obj[string] = true;
+    this.ref.doc(getName(name,this.state.currentUser)).collection('messages').doc(this.state.messages[i].key).update(obj)
     this.setState({ dialogVisible: false });
   }
   getCurrentUser = (email) => {
       return(email.replace("@","").replace(".",""))
   }
   handleContacts = () => {
-    let firebase_path = '/contacts/' + this.state.currentUser
-    firebase.database().ref(firebase_path).push({
-      contact:this.state.addCon,
-    }).then((data)=>{
-      Firebase.database().goOffline()
-    }).catch((error)=>{
-        //error callback
-        console.log('error ' , error)
+    let prevContacts = []
+    let that = this
+    this.contacts.doc(varCurrentUser).get().then(function(doc) {
+      if (doc.exists) {
+          console.log("Document data:", doc.data());
+          prevContacts = doc.data().contacts
+          prevContacts.push(that.state.addCon)
+          that.contacts.doc(varCurrentUser).set({
+            contacts : prevContacts
+          })
+      }
     })
     this.setState(previousState => {
       return { promptVisible: false }
     })
-    this.loadContacts();
+    
   }
   loadInitialContacts = () => {
     this.setState(previousState => {
@@ -478,113 +361,61 @@ export default class App extends React.Component {
     });
     
   }
-  loadContacts = () => {
-    //if(this.state.contacts.length == 0){
-      lastMessageDetailArray = []
-      let that = this
-      let firebase_path = '/contacts/' + this.state.currentUser
-      this.firebase_ref = firebase.database().ref(firebase_path)
-      this.firebase_ref.once("value").then((snapshot) => { 
-        snapshot.forEach(function(data) {
-          that.countUnreadMsgs(data.val().contact)
-          let lastMessageDetailObject = {};
-          lastMessageDetailObject.contact = data.val().contact;
-          lastMessageDetailObject.lastMessage = that.getLastMessage(getName(data.val().contact.replace("@","").replace(".",""), that.state.currentUser.replace("@","").replace(".","")));
-          lastMessageDetailObject.count = that.countUnreadMsgs(data.val().contact)
-          lastMessageDetailArray.push(lastMessageDetailObject);
-          console.log(data.val().contact)
-        });
-        that.state.contactInfo.push(['hi','11:32','01-12-2018'])
-        that.setState((previousState) => {
-          return { contacts : lastMessageDetailArray}
-        })
-        /*that.state.contactInfo.push(['hi','11:32','01-12-2018'])
-        that.setState((previousState) => {
-          return { contacts : previousState.contacts.concat(snapshot.val().contact)}
-        })*/
-        //setTimeout(this.printlastMessageDetailObjects, 2000);
-      }), function (error) {
-          console.log("Error: " + error.code);
-      };
-    //}
-  }
-  printlastMessageDetailObjects = () => {
-    for (i=0; i< lastMessageDetailArray.length; ++i) {
-      let lastMessageDetailObject = lastMessageDetailArray[i];
-      Alert.alert(lastMessageDetailObject.contact);
-      Alert.alert(lastMessageDetailObject.lastMessage.message);
-      Alert.alert(lastMessageDetailObject.lastMessage.time);
-      Alert.alert(lastMessageDetailObject.lastMessage.date);
-    }
-  } 
-  /*getLastMessage = (contact) => {
+  countUnreadMsgs2 = (val) => {
+    let ting2 = val.replace("@","").replace(".","")
+    let stuff = {num : 0}
     let that = this
-    let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
-    //contact = contact.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + contact
-    let ref = firebase.database().ref(firebase_path)
-    //((snapshot.val().sender === varCurrentUser && snapshot.val().delSender === false) || (snapshot.val().sender != varCurrentUser && snapshot.val().delRec === false))
-    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
-    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-    lastMsg.on("child_added").then((data) => {
-      lastMessage.message = data.val().message
-      lastMessage.time = data.val().time
-      lastMessage.date = data.val().date
-      that.setState(that.state);
-    })
-    return lastMessage;
-  }*/
-  getLastMessage = (contact) => {
-    let that = this
-    let lastMessage = { message:"Loading ...",time:"Loading ...",date:"Loading ..."}
-    //contact = contact.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + contact
-    let ref = firebase.database().ref(firebase_path)
-    
-    //Alert.alert(getName(contact.replace("@","").replace(".",""), that.state.currentUser))
-    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-    lastMsg.on("child_added", function(data) {
-      lastMessage.message = data.val().message
-      lastMessage.time = data.val().time
-      lastMessage.date = data.val().date
-      that.setState(that.state);
-    })
-    
-    return lastMessage;
-  }
-  lastMsgInfo = (contact) => {
-    let name = contact.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)
-    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
-    let that = this
-    lastMsg.once("child_added", function(data) {
-      let array = [ data.val().message , data.val().time , data.val().date]
-      Alert.alert(array.join())
-      return array;
-    }, function (error) {
-        console.log("Error: " + error.code);
+    this.ref.doc(getName(ting2,varCurrentUser))
+      .collection("messages")
+      .where("read","==",false)
+      .where("sender","==",ting2)
+      .onSnapshot(function(querySnapshot) {
+      stuff.num = querySnapshot.size
+      that.setState(that.state)
     });
-    return ['hello' , '14:15' , '27-11-2018']
+    return stuff
   }
-  lastMsgInfo1 = (contact) => {
-    let name = contact.replace("@","").replace(".","")
-    let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser)+'/'
-    let lastMsg = firebase.database().ref(firebase_path).limitToLast(1);
+  loadContacts2 = (documentSnapshot) => {
+    let that = this
     let array = []
-    lastMsg.on("child_added", function(snapshot) {
-      Alert.alert(snapshot.key + ' key')
-      //Alert.alert(data.ref.parent.key)
-      array.push(snapshot.val().message)
-      //Alert.alert(data.val().message)
-      array.push(snapshot.val().time)
-      array.push(snapshot.val().date)
-      //Alert.alert(array.join())
-     // Alert.alert(data.val().message)
-    }, function (error) {
-        Alert.alert("Error: " + error.code);
+    let conArray
+    if(documentSnapshot.exists){
+      let conArray = documentSnapshot.data().contacts
+      conArray.forEach(function(ting){
+        let contactObj = {}
+        contactObj.count1 = that.countUnreadMsgs2(ting)
+        contactObj.contact = ting
+        contactObj.lstMsg = that.getLastMessage2(ting)
+        array.push(contactObj)
+      })
+      that.setState((previousState) => {
+        return { contacts2 : array}
+      })
+    }else{
+      this.setState({ 
+        contacts2 : []
+      });
+    }
+  }
+  getLastMessage2 = (val) => {
+    let ting2 = val.replace("@","").replace(".","")
+    let that = this
+    let lastMessage = {message: '' , time: '' , date: ''}
+    this.ref.doc(getName(ting2,varCurrentUser))
+    .collection("messages")
+    .where(this.getValue(ting2),"==",false)
+    .orderBy("timestamp","desc")
+    .limit(1)
+    .onSnapshot(function(querySnapshot) {
+      querySnapshot.forEach((doc) => {
+          const { message, time , date} = doc.data();
+          lastMessage.message = message;
+          lastMessage.time = time;
+          lastMessage.date = date;
+          that.setState(that.state)
+      }); 
     });
-    //return ['msg', '14:15', '27-11-2018']
-    //return array
+    return lastMessage
   }
   handleInsert = () => {
     this.ref.doc(getName(this.state.language.replace("@","").replace(".",""), this.state.currentUser)).collection('messages').where("read","==",false).get().then(function(querySnapshot) {
@@ -628,16 +459,11 @@ export default class App extends React.Component {
     });
   }
   pickerFunc = (val) => {
-    
-    /*firebase.database().goOffline()
-    if (this.state.language === '')  {
-      this.loadData(val)
-    } else if (this.state.language !== val) {
-      this.loadData(val)
-    }*/
-    
-    this.unsubscribe = this.ref.doc(getName(val.replace("@","").replace(".",""), this.state.currentUser)).collection('messages').orderBy("timestamp", "asc").onSnapshot(this.loadData2)
-    this.loadData(val)
+    this.setState(previousState => {
+      return {messages:[]};
+    });
+    this.unsubscribe = this.ref.doc(getName(val.replace("@","").replace(".",""), this.state.currentUser)).collection("messages").where(this.getValue(val.replace("@","").replace(".","")), "==",false).orderBy("timestamp", "asc").onSnapshot(this.loadData2)
+    this.unContacts();
     this.setState(previousState => {
       return { language : val , showScreen : !previousState.showScreen};
     });
@@ -653,49 +479,26 @@ export default class App extends React.Component {
       return { text: '' };
     });
     if(this.state.text != ''){
-      //this.state.chat.push(this.state.text)
       this.handleInsert()
-      
     }else{
       Alert.alert('You need to type something')
     }
-    //this.textInput.clear()
   }
-  deleteContacts = (val) => {
-    this.setState(previousState => {  
-      return { contacts: previousState.contacts.filter(con => con.contact != val) };
-    });
-    firebase_path = '/contacts/' + this.state.currentUser
-    firebase.database().ref(firebase_path).once("value")
-    .then((snapshot)=> {
-      snapshot.forEach(function(childSnapshot) {
-        var key = childSnapshot.key;
-        if(childSnapshot.val().contact === val){
-          let newPath = firebase_path + '/' + key 
-          firebase.database().ref(newPath).remove()
-        }
-        });
+  deleteContacts2 = (val) => {
+    let array = []
+    let that = this
+    this.contacts.doc(varCurrentUser).get().then(function(doc) {
+      array = doc.data().contacts
+      array = array.filter(con => con != val)
+      that.contacts.doc(varCurrentUser).update({
+        contacts: array
+      }) 
     })
-    
-  }
+  } 
   deleteMessage = ( i, k1) => {
-    //this.state.messages.splice(i,1)
     this.setState(this.state);
     let name = this.state.language.replace("@","").replace(".","")
     this.ref.doc(getName(name,this.state.currentUser)).collection('messages').doc(k1).delete()
-    /*let firebase_path = '/chatMessages/' + getName(name , this.state.currentUser) + '/'
-    //firebase.database().ref(firebase_path).remove()
-    firebase.database().ref(firebase_path).once("value")
-    .then((snapshot)=> {
- 
-      snapshot.forEach(function(childSnapshot) {
-        var key = childSnapshot.key;
-        if(key === k1){
-          let newPath = firebase_path + '/' + key 
-          firebase.database().ref(newPath).remove()
-        }
-        });
-      })*/
   }
   
   change = () => {
@@ -710,24 +513,7 @@ export default class App extends React.Component {
       });
     });
     this.unsubscribe();
-    let name = this.state.language.replace("@","").replace(".","")
-    let that = this
-    let path = '/chatMessages/' + getName(name, that.state.currentUser) 
-    let ref = firebase.database().ref(path)
-    /*ref.off("child_added")
-    ref.orderByChild("read").equalTo(false).on("child_added", function(snapshot) {
-      if(snapshot.val().sender != varCurrentUser){
-        firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+snapshot.key+'/').update({ read: true });
-      }
-    })*/
-    ref.orderByChild("read").equalTo(false).once("value").then((snapshot)=> {
-      snapshot.forEach(function(childSnapshot) {
-        if(childSnapshot.val().sender != varCurrentUser){
-          firebase.database().ref('/chatMessages/' + getName(name , that.state.currentUser) + '/'+childSnapshot.key+'/').update({ read: true });
-        }
-      });
-    })
-    this.loadContacts()
+    this.unContacts = this.contacts.doc(varCurrentUser).onSnapshot(this.loadContacts2)
     this.setState(previousState => {
       return { showScreen : !previousState.showScreen}
     })
@@ -848,7 +634,10 @@ export default class App extends React.Component {
     return (
       <View style={{flex:1}}>
           {this.state.showScreen ? 
-          <Screen1 
+          <Screen1
+            unreadMessages={this.state.unreadMessages}
+            deleteContacts2={this.deleteContacts2}
+            contacts2={this.state.contacts2}
             contactInfo={this.state.contactInfo}
             handleLogout={this.handleLogout}
             loadContacts={this.loadContacts}
